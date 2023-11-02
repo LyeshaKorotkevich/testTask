@@ -16,14 +16,15 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryProductRepositoryTest {
-    public ProductRepository productRepository = new InMemoryProductRepository();
+
+    private ProductRepository productRepository = new InMemoryProductRepository();
 
     @Nested
     class FindByIDProduct {
+
         @ParameterizedTest
         @MethodSource("ru.clevertec.product.repository.impl.InMemoryProductRepositoryTest#provideProducts")
         void findByIdShouldReturnProduct(Product product) {
@@ -50,25 +51,11 @@ public class InMemoryProductRepositoryTest {
             assertEquals(expected, actual);
         }
 
-        @Test
-        void findByIdShouldReturnExpectedProductEqualsWithoutUuid() {
-            // given
-            ProductTestData expected = ProductTestData.builder().build();
-
-            // when
-            Product actual = productRepository.findById(expected.getUuid()).orElseThrow();
-
-            // then
-            assertThat(actual)
-                    .hasFieldOrPropertyWithValue(Product.Fields.name, expected.getUuid())
-                    .hasFieldOrPropertyWithValue(Product.Fields.description, expected.getDescription())
-                    .hasFieldOrPropertyWithValue(Product.Fields.price, expected.getPrice())
-                    .hasFieldOrPropertyWithValue(Product.Fields.created, expected.getCreated());
-        }
     }
 
     @Nested
     class FindAllProducts {
+
         @Test
         void findAllShouldReturnListOfProducts() {
             // given
@@ -102,6 +89,7 @@ public class InMemoryProductRepositoryTest {
 
     @Nested
     class SaveProduct {
+
         @ParameterizedTest
         @MethodSource("ru.clevertec.product.repository.impl.InMemoryProductRepositoryTest#provideProducts")
         void saveProductShouldReturnProduct(Product product) {

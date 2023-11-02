@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ProductMapperImplTest {
 
-    public ProductMapper productMapper = new ProductMapperImpl();
+    private ProductMapper productMapper = new ProductMapperImpl();
 
     @Test
     void toProductShouldReturnProduct() {
