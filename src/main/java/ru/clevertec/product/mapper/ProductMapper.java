@@ -4,6 +4,8 @@ import ru.clevertec.product.data.InfoProductDto;
 import ru.clevertec.product.data.ProductDto;
 import ru.clevertec.product.entity.Product;
 
+import java.util.List;
+
 public interface ProductMapper {
 
     /**
@@ -21,6 +23,14 @@ public interface ProductMapper {
      * @return DTO с идентификатором
      */
     InfoProductDto toInfoProductDto(Product product);
+
+    /**
+     * Маппит лист продукт в лист DTO
+     *
+     * @param products - лист продуктов
+     * @return List<InfoProductDto>
+     */
+    List<InfoProductDto> toInfoProductDtoList(List<Product> products);
 
     /**
      * Сливает существующий продукт с информацией из DTO
