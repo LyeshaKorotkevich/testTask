@@ -1,11 +1,14 @@
 package ru.clevertec.product.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import ru.clevertec.product.data.InfoProductDto;
 import ru.clevertec.product.data.ProductDto;
 import ru.clevertec.product.entity.Product;
 
 import java.util.List;
 
+@Mapper
 public interface ProductMapper {
 
     /**
@@ -14,6 +17,8 @@ public interface ProductMapper {
      * @param productDto - DTO для маппинга
      * @return новый продукт
      */
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "created", ignore = true)
     Product toProduct(ProductDto productDto);
 
     /**
@@ -22,6 +27,7 @@ public interface ProductMapper {
      * @param product - существующий продукт
      * @return DTO с идентификатором
      */
+
     InfoProductDto toInfoProductDto(Product product);
 
     /**
@@ -40,5 +46,10 @@ public interface ProductMapper {
      * @param productDto информация для обновления
      * @return обновлённый продукт
      */
+    @Mapping(target = "uuid", source = "product.uuid")
+    @Mapping(target = "name", source = "productDto.name")
+    @Mapping(target = "description", source = "productDto.description")
+    @Mapping(target = "price", source = "productDto.price")
+    @Mapping(target = "created", source = "product.created")
     Product merge(Product product, ProductDto productDto);
 }
