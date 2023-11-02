@@ -9,7 +9,6 @@ import ru.clevertec.product.data.ProductDto;
 import ru.clevertec.product.entity.Product;
 import ru.clevertec.product.mapper.ProductMapper;
 import ru.clevertec.product.repository.ProductRepository;
-import ru.clevertec.product.service.ProductService;
 import ru.clevertec.product.util.ProductTestData;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class ProductServiceImplTest {
     private ProductMapper productMapper;
 
     @InjectMocks
-    private ProductService productService;
+    private ProductServiceImpl productService;
 
     @Captor
     private ArgumentCaptor<Product> productCaptor;
@@ -51,7 +50,8 @@ public class ProductServiceImplTest {
                 .findById(uuid);
 
         doReturn(expected)
-                .when(productMapper.toInfoProductDto(productToFind));
+                .when(productMapper)
+                .toInfoProductDto(productToFind);
 
         // when
         InfoProductDto actual = productService.get(uuid);
@@ -71,10 +71,12 @@ public class ProductServiceImplTest {
         List<InfoProductDto> expected = List.of(ProductTestData.builder().build().buildInfoProductDto());
 
         doReturn(products)
-                .when(productRepository).findAll();
+                .when(productRepository)
+                .findAll();
 
         doReturn(expected)
-                .when(productMapper).toInfoProductDtoList(products);
+                .when(productMapper)
+                .toInfoProductDtoList(products);
 
         // when
         List<InfoProductDto> actual = productService.getAll();
@@ -96,10 +98,12 @@ public class ProductServiceImplTest {
         ProductDto productDto = ProductTestData.builder().build().buildProductDto();
 
         doReturn(productToSave)
-                .when(productMapper.toProduct(productDto));
+                .when(productMapper)
+                .toProduct(productDto);
 
         doReturn(expected)
-                .when(productRepository).save(productToSave);
+                .when(productRepository)
+                .save(productToSave);
 
         // when
         productService.create(productDto);
@@ -125,14 +129,16 @@ public class ProductServiceImplTest {
                 .withDescription("New")
                 .build().buildProduct();
 
-        doReturn(productToUpdate)
-                .when(productRepository.findById(uuid).orElseThrow());
+        when(productRepository.findById(uuid))
+                .thenReturn(Optional.of(productToUpdate));
 
         doReturn(expected)
-                .when(productMapper).merge(productToUpdate, productDtoForUpdate);
+                .when(productMapper)
+                .merge(productToUpdate, productDtoForUpdate);
 
         doReturn(expected)
-                .when(productRepository).save(expected);
+                .when(productRepository)
+                .save(expected);
 
         // when
         productService.update(uuid, productDtoForUpdate);
