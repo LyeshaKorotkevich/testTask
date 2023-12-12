@@ -9,6 +9,7 @@ import ru.clevertec.product.mapper.ProductMapper;
 import ru.clevertec.product.repository.ProductRepository;
 import ru.clevertec.product.service.ProductService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,37 +21,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public InfoProductDto get(UUID uuid) {
-        InfoProductDto infoProductDto = null;
-        try {
-            Product product = productRepository.findById(uuid).orElseThrow();
-            infoProductDto = mapper.toInfoProductDto(product);
-        } catch (Exception e) {
-            throw new ProductNotFoundException(uuid);
-        }
-        return infoProductDto;
+        Product product = productRepository.findById(uuid)
+                .orElseThrow(() -> new ProductNotFoundException(uuid));
+        return mapper.toInfoProductDto(product);
     }
 
     @Override
     public List<InfoProductDto> getAll() {
-        return mapper.toInfoProductDtoList(productRepository.findAll());
+        return productRepository.findAll().stream()
+                .map(mapper::toInfoProductDto)
+                .toList();
     }
 
     @Override
     public UUID create(ProductDto productDto) {
         Product product = mapper.toProduct(productDto);
+        product.setCreated(LocalDateTime.now());
         return productRepository.save(product).getUuid();
     }
 
     @Override
     public void update(UUID uuid, ProductDto productDto) {
-        try {
-            Product productToUpdate = productRepository.findById(uuid).orElseThrow();
-            Product product = mapper.merge(productToUpdate, productDto);
+        Product productToUpdate = productRepository.findById(uuid).orElseThrow(() -> new ProductNotFoundException(uuid));
+        Product product = mapper.merge(productToUpdate, productDto);
 
-            productRepository.save(product);
-        } catch (Exception e) {
-            throw new ProductNotFoundException(uuid);
-        }
+        productRepository.save(product);
     }
 
     @Override

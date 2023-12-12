@@ -9,6 +9,7 @@ import ru.clevertec.product.data.ProductDto;
 import ru.clevertec.product.entity.Product;
 import ru.clevertec.product.mapper.ProductMapper;
 import ru.clevertec.product.repository.ProductRepository;
+import ru.clevertec.product.util.Constant;
 import ru.clevertec.product.util.ProductTestData;
 
 import java.util.List;
@@ -16,8 +17,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceImplTest {
@@ -40,7 +44,7 @@ public class ProductServiceImplTest {
     @Test
     void getShouldReturnInfoProduct() {
         // given
-        UUID uuid = UUID.fromString("e2f53c51-0f2d-4d66-b3fc-e59624aa8cf6");
+        UUID uuid = Constant.DEFAULT_UUID;
 
         InfoProductDto expected = ProductTestData.builder().build().buildInfoProductDto();
         Product productToFind = ProductTestData.builder().build().buildProduct();
@@ -61,11 +65,10 @@ public class ProductServiceImplTest {
         assertEquals(uuid, uuidCaptor.getValue());
 
         assertEquals(expected, actual);
-
     }
 
     @Test
-    void getAllShouldReturnInfoProductDtos(){
+    void getAllShouldReturnInfoProductDtos() {
         // given
         List<Product> products = List.of(ProductTestData.builder().build().buildProduct());
         List<InfoProductDto> expected = List.of(ProductTestData.builder().build().buildInfoProductDto());
@@ -73,7 +76,6 @@ public class ProductServiceImplTest {
         doReturn(products)
                 .when(productRepository)
                 .findAll();
-
         doReturn(expected)
                 .when(productMapper)
                 .toInfoProductDtoList(products);
@@ -155,7 +157,7 @@ public class ProductServiceImplTest {
     @Test
     void deleteShouldInvokeOneTime() {
         //given
-        UUID uuid = UUID.fromString("2f13e8b8-362c-4cd7-a3cf-6b86c42e91d1");
+        UUID uuid = Constant.DEFAULT_UUID;
 
         //when
         productService.delete(uuid);
